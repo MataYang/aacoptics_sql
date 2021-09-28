@@ -1,26 +1,21 @@
 
-
---查询项目名、品名、模具
-SELECT * 
-	FROM dbo.Z_VERSION_USED_HISTORY
-	WHERE PROJECT_NAME='646080' 
-		AND MODEL='N5'
-		AND ITEM_NAME='P4'
+--
+select top 10* 
+	from Z_VERSION_USED_HISTORY
+	where PROJECT_NAME='136101'
+		and RESRCE = '3B7FH15'
+		and MODEL='N2' 
+		and ITEM_NAME='BR'
 	order by ID desc
 go
 
---删除品名
+
 begin tran
 delete from Z_VERSION_USED_HISTORY 
-	where PROJECT_NAME='646080' 
-		AND MODEL='N5'
-		AND ITEM_NAME='P4'
+	where PROJECT_NAME='136101' 
+		and RESRCE = '3B7FH15'
+		and MODEL='N2'
+		and ITEM_NAME='BR'
 go
-delete from Z_VERSION_USED_HISTORY 
-	where PROJECT_NAME='646080' 
-		AND MODEL='N5'
-		AND ITEM_NAME='P1'
-go
-
 --rollback
 commit

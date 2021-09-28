@@ -16,16 +16,16 @@ select top 1* from Bom
 --资源查询resource
 select top 10* from RESOURCE_TYPE
 
---打印log
+--注塑JQHP及中转仓发料打印log
 select top 1* from Z_PRINT_LOG
 
 --LOT SFC绑定SN
 select top 1* from SFC where SFC = '210113E09K';
 select top 1* from SFC_DATA --LOT Data 模具号 版本 穴位
 select top 1* from Z_LensID_SFC;--link SerialID
-select top 1* from Z_LensCPSNInfo; --machine link SerialID
+select top 100* from Z_LensCPSNInfo; --SFC link 镀膜板 serialID
 
---LOT scrap批次报废
+--LOT scrap批次报废、中转仓冻结
 select top 10* from Z_LensID_SFC_DELETE; --operation field Scrap
 
 --状态表
@@ -47,13 +47,16 @@ select top 1000*
 --配对发料
 select top 10* from Z_MATCH_RULE
 
---产品备注表
+--配对发料打印日志
+select top 10* from Z_MATCH_PRINT_LOG
+
+--产品状态、操作表
 select * from PRODUCTION_COMMENT
 
 --error_code内容
 select top 100* from NC_CODE
 --所有检测的不良记录表
-select top 100* from NC_DATA
+select top 100* from NC_DATA where NC_CONTEXT_GBO = 'SFCBO:2210,201201E57N'
 --不良品维修路线
 select top 100* from NC_DISP_ROUTER
 
@@ -61,21 +64,22 @@ select top 100* from NC_DISP_ROUTER
 --测试数据查询表 actual列记录数据
 select top 100MEASURE_NAME,ACTUAL from PARAMETRIC_MEASURE where PARA_CONTEXT_GBO = 'SFCBO:2080,200903N123'
 
---中转仓_收发料打印表
-select top 1* from Z_Product_StockManage
+--异常批次，SFC与镀膜板SN关联查询
+select top 10* from Z_LensID_SFC where LENS_ID = '69711478'
+select top 10* from Z_LensCPSNInfo where ID = '69711478'
 
---中转仓物料-项目、类型、发料情况情况
-select z1.ID,z1.SFC,z1.SITE,z1.TYPE,z1.QTY,c3.ATTRIBUTE,c3.VALUE
-	from Z_SFC_RECEIVED z1,SFC s2,CUSTOM_FIELDS c3
-	where z1.SFC = s2.SFC
-	 and z1.SITE = '2210'
-	 and c3.HANDLE = s2.ITEM_BO
-	 and c3.ATTRIBUTE in ('PROJECT_NAME','ITEM_NAME')
-	 and c3.VALUE = 'BR'
-	 group by z1.SFC,z1.SITE,z1.TYPE,z1.QTY,c3.ATTRIBUTE,c3.VALUE,z1.ID
+select z1.ID,z1.SFC,z2.ID,z2.PART_NAME,z2.PROJECT_NAME,z2.SN,z2.SITE
+		from Z_LensID_SFC z1, Z_LensCPSNInfo z2
+		where z1.SFC = '210220B0VK'
+		and z1.LENS_ID = z2.ID
+		--and z2.SN = 'H1486017A01P6-201011-01836'
+		and z2.site = 5060
 
+--APS模具版本维护表
+select top 10* from z_optics_mould_setting
 
-
+--组装上料记录
+select top 10* from Z_MATCH_LOAD_HISTORY
 
 
 
